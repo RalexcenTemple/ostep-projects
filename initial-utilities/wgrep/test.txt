@@ -1,0 +1,11 @@
+here is some text
+I am looking for the word in this text
+hopefully between all this text i will be able to find 
+the word in the text that i am looking for
+but if i cannot find the text within this text that i am checking
+then it will seem that i will need to go back and
+check the text that i coded in order to find 
+where in the
+text i made an error and then hopefully
+i will be able to fix the text there so that i can find the
+text inside all the other text
