@@ -1,21 +1,30 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-//recreate the cat utility
-
+//Reed Ceniviva
+//CIS 3207 System Programming and OS
+//Lab0 Unix Utils
+//Description: Recreate basic unix utility calls
 
 int main(int argv, char** argc){
+	int stat = 0;
+	if(argv == 1){
+		return(0);
+	}
 	for(int i = 1 ; i < argv; i++){
 		FILE *rFile = fopen(argc[i],"r");
 		int BUFFSIZE = 128;
 		char buff[BUFFSIZE];
-		if(argv > 0 && rFile){
+		if(rFile){
 			printf("File Number: %d | File Name: %s\n--------------------------\n", i,argc[i]);
 			while(fgets(buff,BUFFSIZE,rFile) != NULL){
 				puts(buff);
 			}
+			fclose(rFile);
 		}else{
-			printf("Could not access the files");
+			printf("wcat: cannot open file %s\n", argc[i]);
+			stat = 1;
 		}
 	}
+	return(stat);
 }

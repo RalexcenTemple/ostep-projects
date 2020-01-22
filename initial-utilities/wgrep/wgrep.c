@@ -1,53 +1,78 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
+
+//Reed Ceniviva
+//CIS 3207 System Programming and OS
+//Lab0 Unix Utils
+//Description: Recreate basic unix utility calls
 	
 int main(int argv, char** args){
-	printf("ARG 1: %s\n", args[0]);
-	printf("ARG 1: %s\n", args[1]);
-	printf("ARG 1: %s\n", args[2]);
-	printf("ARG NUM: %d\n", argv);
-	if(argv >= 2){
+	if(argv >= 3){
 		for(int i = 2 ; i < argv; i++){
-			printf("Inside the first for loop\n");
 			FILE *rFile = fopen(args[i],"r");
 			if(rFile){
-				printf("found the file\n");
-				//assigne getline to a variable
 				char* buff = NULL;
 				size_t buffSize = 0;
 				ssize_t line;//using signed size_t to catch the -1 errors
 				int lineCount = 0;
-				//while that isnt null
 				while((line = getline(&buff, &buffSize, rFile)) != -1){//failed to read if -1
-					//printf("Inside the first while loop\n");
 					lineCount++;
 					int count = 0;
 					for(int m = 0; m < line; m++){
-						//printf("Inside the second for loop\n");
 						for(int j = 0; j < strlen(args[1]); j++){
-							//printf("Inside the third for loop\n");
-							//printf("M: %d \n",m);
-							//printf("count: %d\n",count);
 							if(args[1][j] == buff[m]){
-								//printf("Found a matching letter\n");
 								count++;
 								m++;
 								if(count == strlen(args[1])){
-									//printf("Found the word\n");
 									printf("Line: %d | %s\n", lineCount, buff);
 									m -= (count-1);
 									count = 0;
 								}
 							}else{
-								//printf("Matching Letters were not the word\n");
 								m -= count;
 								count = 0;
 							}
 						}
 					}
 				}
+			}else{
+				puts("wgrep: cannot open file");
+				return 1;
 			}
 		}
-	}	
+	}else if(argv == 2){//realize this is pretty bad practice with ust duplicating code
+		char* buff = NULL;
+		size_t buffSize = 0;
+		ssize_t line;
+		int lineCount = 0;
+		while((line = getline(&buff, &buffSize, stdin)) != -1){//failed to read if -1
+                                        lineCount++;
+                                        int count = 0;
+					if(strcmp(buff,"\n") == 0){//check if the user is not entering informaion anymore
+						break;
+					}
+                                        for(int m = 0; m < line; m++){
+                                                for(int j = 0; j < strlen(args[1]); j++){
+                                                        if(args[1][j] == buff[m]){
+                                                                count++;
+                                                                m++;
+                                                                if(count == strlen(args[1])){
+                                                                        printf("Line: %d | %s\n", lineCount, buff);
+                                                                        m -= (count-1);
+                                                                        count = 0;
+                                                                }
+                                                        }else{
+                                                                m -= count;
+                                                                count = 0;
+                                                        }
+                                                }
+                                        }
+                                }
+	}else if(argv == 1){
+		puts("wgrep: searchterm [file...]");
+		return(1);
+	}
+	return(0);	
 }
