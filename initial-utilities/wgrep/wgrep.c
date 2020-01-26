@@ -17,7 +17,7 @@ int main(int argv, char** args){
 				size_t buffSize = 0;
 				ssize_t line;//using signed size_t to catch the -1 errors
 				int lineCount = 0;
-				while((line = getline(&buff, &buffSize, rFile)) != -1){//failed to read if -1
+				while((line = getline(&buff, &buffSize,rFile)) != -1){//failed to read if -1
 					lineCount++;
 					int count = 0;
 					for(int m = 0; m < line; m++){
@@ -26,13 +26,16 @@ int main(int argv, char** args){
 								count++;
 								m++;
 								if(count == strlen(args[1])){
-									printf("Line: %d | %s\n", lineCount, buff);
+									printf("%s", buff);
 									m -= (count-1);
 									count = 0;
+									//evidently from the tests each match should print the line only once so making some changes to thesevalues post match
+									m = line;
 								}
 							}else{
 								m -= count;
 								count = 0;
+								break;
 							}
 						}
 					}
@@ -59,19 +62,21 @@ int main(int argv, char** args){
                                                                 count++;
                                                                 m++;
                                                                 if(count == strlen(args[1])){
-                                                                        printf("Line: %d | %s\n", lineCount, buff);
+                                                                        printf("%s", buff);
                                                                         m -= (count-1);
                                                                         count = 0;
+									m = line;
                                                                 }
                                                         }else{
                                                                 m -= count;
                                                                 count = 0;
+								break;
                                                         }
                                                 }
                                         }
                                 }
 	}else if(argv == 1){
-		puts("wgrep: searchterm [file...]");
+		puts("wgrep: searchterm [file ...]");
 		return(1);
 	}
 	return(0);	

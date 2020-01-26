@@ -16,14 +16,15 @@ int main(int argv, char** argc){
 		int BUFFSIZE = 128;
 		char buff[BUFFSIZE];
 		if(rFile){
-			printf("File Number: %d | File Name: %s\n--------------------------\n", i,argc[i]);
+			//printf("File Number: %d | File Name: %s\n--------------------------\n", i,argc[i]);
 			while(fgets(buff,BUFFSIZE,rFile) != NULL){
-				puts(buff);
+				printf("%s",buff);
 			}
 			fclose(rFile);
 		}else{
-			printf("wcat: cannot open file %s\n", argc[i]);
+			printf("wcat: cannot open file\n");
 			stat = 1;
+			return 1;
 		}
 	}
 	return(stat);

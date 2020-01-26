@@ -6,69 +6,47 @@
 //Reed Ceniviva
 //CIS 3207 System Programming and OS
 //Lab0 Unix Utils
-//Description: Recreate basic unix utility calls
 
 
-char * intToBinary(int count, char c, char* out);
-
-int main(int argv, char ** argc){
-	if(argv > 1){
-		printf("ARGV: %d\n", argv);
-		for(int i = 1; i < argv; i++){
-		FILE *fp = fopen(argc[1], "r");
-		if(fp == NULL){
-			puts("FILE NOT FOUND");
-			return (-1);
-		}
-		int count = 1;
-		int c;
-		int temp = 0;
-		while((c = fgetc(fp)) != EOF){
-			if(c == temp && count < 15){//catch duplicated greater than 15 successive
-				count++;
-			}else{
-				if(temp != 0){
-					char *In = malloc(sizeof(char)*5);
-					In = intToBinary(count, (char)temp, In);
-					fwrite(In, (sizeof(char)*5), 1, stdout);
-					temp = c;
-					count = 1;
-				}else{
-					temp = c;
-				}
-			}
-		}
-	}
-	}else if(argv == 1){
-		puts("wzip: file1 [file2...]");//this is not the format of the way the program was directed to be implemented
-		return 1;
-	}
+int main(int args, char** argv){
+        if(args == 1){
+                puts("wzip: file1 [file2 ...]");
+                return 1;
+        }
+        char c = 0;
+        int count = 0;
+        char d = 0;
+        int i = 1;
+        while(i < args){
+		FILE *fp = fopen(argv[i], "r");
+                if(fp){
+                        while(1){
+				c = fgetc(fp);
+                                if(count == 0){//catch initial run
+                                        d = c;
+                                        count ++;
+                                }else if(c == d){//adjust for conecutive matches
+                                        count ++;
+                                }else{//adjust for a change in character
+                                        if(c==EOF){
+						break;
+					}else{
+						fwrite(&count, sizeof(int), 1, stdout);
+                                        	fwrite(&d, sizeof(char), 1, stdout);
+                                        	d = c;
+                                        	count = 1;
+					}
+                                }
+                        }
+                i++;
+                }else{
+                        puts("FAILED TO OPEN FILE");
+                        return(-1);
+                }
+                if(i == args){
+                        fwrite(&count, sizeof(int), 1, stdout);
+                        fwrite(&d, sizeof(char), 1, stdout);
+                }
+        }
 }
 
-char * intToBinary(int count, char c, char* out){ 
-	if(count%2 == 0){
-		out[3] = '0';
-	}else{
-		out[3] = '1';
-	}
-	count = count/2;
-	if(count%2 == 0){
-                out[2] = '0';
-        }else{
-                out[2] = '1';
-        }
-	count = count/2;
-	if(count%2 == 0){
-                out[1] = '0';
-        }else{
-                out[1] = '1';
-        }
-	count = count/2;
-	if(count%2 == 0){
-                out[0] = '0';
-        }else{
-                out[0] = '1';
-        }
-	out[4] = c;
-	return out;
-}

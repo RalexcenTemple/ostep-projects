@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-
+#include <elf.h>
 
 //Reed Ceniviva
 //CIS 3207 System Programming and OS
@@ -8,44 +8,37 @@
 //Description: Recreate basic unix utility calls
 
 
-int main(int argv, char** argc){//got the main arguments mized up
-	for(int r = 1; r < argv;r++){
-	FILE *fp = fopen(argc[r],"r");
-	if(!fp){
-		puts("ERROR GETTING FILE");
-		return (-1);
+int main(int args, char** argv){//got the main arguments mized up
+	if(args == 1){
+		printf("wunzip: file1 [file2 ...]\n");
+		return(1);
 	}
-	int c;
-	int pos = 0;//keep track of position within 5 bit sets
-	int num = 0;
-	while((c = fgetc(fp)) != EOF){
-		if(pos < 4){
-			int temp = 0;
-			if(c == 49){
-				temp = 1;
-				for(int i = 0; i < (3 - pos);i++){
-					temp = temp * 2;
+	for(int i = 1; i < args; i++){
+		//printf("I: %d\n", i);
+		FILE *fp = fopen(argv[i], "rb");
+		if(fp){
+			char c;
+			int a;
+			//int j = 0;
+			while(1){
+				fread(&a, sizeof(int), 1, fp);
+				fread(&c, sizeof(char), 1, fp);
+				if(feof(fp)){
+					break;
 				}
-				num += temp;	
+				//printf("A: %d\n C: %c C(int): %d\n", a,c,(int)c);
+				//if(a == 1 || (int)c == 10){
+				if((int)c == 10){
+					puts("");	
+				}else{
+					for(int m = 0; m < a; m++){
+						printf("%c",c);
+					}
+				}
+			//printf("J: %d\n", j);
 			}
-			pos++;
-		}else if((c > 49 || c < 48) && pos < 4){
-			//puts("NON BINARY VALUE READ AT BINARY POSITION");
-			//for some reason the EOF check doesnt hit when all the characters from the file have been read so just using this as a completion check for now
-			puts("END OF ENCRYPTION REACHED");
-			return (1);
-		}else if(pos == 4){
-			for(int j = 0; j < num; j++){
-				printf("%c", (char)c); 
-			}
-			pos = 0;
-			num = 0;
-		}else{
-			puts("UNFORESEEN ERROR, POSSIBLY:");
-			puts("POSITION VALUE NOT BEING RESET");
-			return (-3);
-		}	
-	}
+			fclose(fp);
+		}
 	}
 }
 	
