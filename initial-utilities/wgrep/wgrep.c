@@ -9,10 +9,10 @@
 //Description: Recreate basic unix utility calls
 	
 int main(int argv, char** args){
-	if(argv >= 3){
-		for(int i = 2 ; i < argv; i++){
+	if(argv >= 3){//if there are enough arguments
+		for(int i = 2 ; i < argv; i++){//for all the files
 			FILE *rFile = fopen(args[i],"r");
-			if(rFile){
+			if(rFile){//if opening the files worked
 				char* buff = NULL;
 				size_t buffSize = 0;
 				ssize_t line;//using signed size_t to catch the -1 errors
@@ -20,19 +20,19 @@ int main(int argv, char** args){
 				while((line = getline(&buff, &buffSize,rFile)) != -1){//failed to read if -1
 					lineCount++;
 					int count = 0;
-					for(int m = 0; m < line; m++){
-						for(int j = 0; j < strlen(args[1]); j++){
-							if(args[1][j] == buff[m]){
+					for(int m = 0; m < line; m++){//for each character in the line
+						for(int j = 0; j < strlen(args[1]); j++){//for each character in the searched word
+							if(args[1][j] == buff[m]){//check if they match
 								count++;
-								m++;
-								if(count == strlen(args[1])){
+								m++;//increment if a match is found
+								if(count == strlen(args[1])){//if matches is equal to the char is the searched term
+									//print line, reassign m to the value of line since it doesnt matter if there are more than one match per line
 									printf("%s", buff);
 									m -= (count-1);
 									count = 0;
-									//evidently from the tests each match should print the line only once so making some changes to thesevalues post match
 									m = line;
 								}
-							}else{
+							}else{//if a match isnt found fix m's location and reset count
 								m -= count;
 								count = 0;
 								break;
@@ -45,7 +45,7 @@ int main(int argv, char** args){
 				return 1;
 			}
 		}
-	}else if(argv == 2){//realize this is pretty bad practice with ust duplicating code
+	}else if(argv == 2){//basically a duplication of the code above to hand the users input rather than a file
 		char* buff = NULL;
 		size_t buffSize = 0;
 		ssize_t line;
@@ -75,7 +75,7 @@ int main(int argv, char** args){
                                                 }
                                         }
                                 }
-	}else if(argv == 1){
+	}else if(argv == 1){//not enough arguments
 		puts("wgrep: searchterm [file ...]");
 		return(1);
 	}
