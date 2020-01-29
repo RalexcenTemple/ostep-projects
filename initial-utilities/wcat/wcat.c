@@ -8,24 +8,23 @@
 
 int main(int argv, char** argc){
 	int stat = 0;
-	if(argv == 1){
+	if(argv == 1){//not enough arguments
 		return(0);
 	}
-	for(int i = 1 ; i < argv; i++){
+	for(int i = 1 ; i < argv; i++){//for loop to go through the files
 		FILE *rFile = fopen(argc[i],"r");
 		int BUFFSIZE = 128;
 		char buff[BUFFSIZE];
-		if(rFile){
-			//printf("File Number: %d | File Name: %s\n--------------------------\n", i,argc[i]);
+		if(rFile){//check if opening the file succeeded
 			while(fgets(buff,BUFFSIZE,rFile) != NULL){
 				printf("%s",buff);
 			}
-			fclose(rFile);
+			fclose(rFile);//close file after finished reading
 		}else{
 			printf("wcat: cannot open file\n");
 			stat = 1;
 			return 1;
 		}
 	}
-	return(stat);
+	return(stat);//stat variable likely not needed
 }
